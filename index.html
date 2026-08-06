@@ -245,16 +245,24 @@ function fieldMap(rows){
   return map;
 }
 
-function driveEmbedUrl(link){
+function driveFileId(link){
   if(!link) return null;
   let m = link.match(/\/d\/([a-zA-Z0-9_-]+)/);
-  let id = m ? m[1] : null;
-  if(!id){
-    m = link.match(/[?&]id=([a-zA-Z0-9_-]+)/);
-    id = m ? m[1] : null;
-  }
+  if(m) return m[1];
+  m = link.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+  return m ? m[1] : null;
+}
+
+function driveEmbedUrl(link){
+  const id = driveFileId(link);
   if(!id) return null;
   return `https://drive.google.com/file/d/${id}/preview`;
+}
+
+function driveImageUrl(link){
+  const id = driveFileId(link);
+  if(!id) return null;
+  return `https://drive.google.com/uc?export=view&id=${id}`;
 }
 
 async function loadAll(){
@@ -412,15 +420,24 @@ function renderLageplan(){
   area.innerHTML = '';
   if(!state.lageplan || !state.lageplan.link) return;
   const embed = driveEmbedUrl(state.lageplan.link);
+  const imgUrl = driveImageUrl(state.lageplan.link);
   if(!embed) return;
   const L = t();
   const section = document.createElement('div');
   section.className = 'lageplan-section';
   section.innerHTML = `
     <p class="section-title">${L.lageplan}</p>
-    <div class="lageplan-frame"><iframe src="${embed}" allow="autoplay"></iframe></div>
+    <div class="lageplan-frame">
+      <img id="lageplanImg" src="${imgUrl}" alt="Lageplan" style="width:100%;height:100%;object-fit:contain;background:var(--paper);display:block;">
+      <iframe id="lageplanFallback" src="${embed}" style="display:none;width:100%;height:100%;border:none;" allow="autoplay"></iframe>
+    </div>
     ${state.lageplan.caption ? `<p class="lageplan-caption">${escapeHtml(state.lageplan.caption)}</p>` : ''}
   `;
+  const img = section.querySelector('#lageplanImg');
+  img.addEventListener('error', () => {
+    img.style.display = 'none';
+    section.querySelector('#lageplanFallback').style.display = 'block';
+  });
   area.appendChild(section);
 }
 
