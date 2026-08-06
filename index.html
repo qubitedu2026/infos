@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>quBit — Zeitplan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:wght@400;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<style>
+  :root{
+    --ink:#1B2430;
+    --paper:#FAFAF8;
+    --card:#FFFFFF;
+    --slate:#6B7280;
+    --border:#E3E1D9;
+    --rail:#C9C6BA;
+    --brand:#00549F;
+    --red:#B0332E;
+    --amber-bg:#FBEFD9;
+    --amber-fg:#8A5A16;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Space Grotesk',system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:760px;margin:0 auto;padding:2.5rem 1.25rem 4rem;}
+  header{margin-bottom:1.5rem;}
+  .eyebrow{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--slate);
+    margin:0 0 6px;
+  }
+  h1{font-size:26px;font-weight:600;margin:0 0 6px;line-height:1.2;}
+  .subtitle{font-size:15px;color:var(--slate);margin:0;}
+
+  .toolbar{display:flex;align-items:center;gap:10px;margin-top:1.25rem;flex-wrap:wrap;}
+  .lang-switch{display:flex;border:1px solid var(--ink);border-radius:6px;overflow:hidden;}
+  .lang-switch button{
+    font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:500;
+    border:none;background:var(--paper);color:var(--ink);padding:7px 14px;cursor:pointer;
+  }
+  .lang-switch button.active{background:var(--ink);color:var(--paper);}
+  .lang-switch button:hover{opacity:0.85;}
+
+  .announcement{
+    margin-top:1.25rem;
+    background:var(--amber-bg);
+    color:var(--amber-fg);
+    border:1px solid #E8C888;
+    border-radius:8px;
+    padding:12px 14px;
+    font-size:13px;
+    line-height:1.5;
+  }
+  .announcement b{display:block;font-family:'IBM Plex Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px;}
+
+  .tabs{display:flex;gap:6px;border-bottom:1px solid var(--border);margin:2rem 0 1.25rem;flex-wrap:wrap;}
+  .tab{
+    font-family:'IBM Plex Mono',monospace;font-size:13px;padding:9px 14px;color:var(--slate);
+    cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;background:none;border-top:none;border-left:none;border-right:none;
+  }
+  .tab.active{color:var(--ink);border-bottom-color:var(--ink);font-weight:500;}
+
+  .track-columns-header{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px;}
+  .track-columns-header span{
+    font-family:'IBM Plex Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:0.05em;
+    color:var(--slate);padding:4px 2px 6px;border-bottom:1px solid var(--border);
+  }
+  .track-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;align-items:start;}
+  .track-col{display:flex;flex-direction:column;gap:10px;min-width:0;}
+  .track-col .session{margin-bottom:0;}
+  @media (max-width:520px){
+    .track-row{grid-template-columns:1fr;}
+    .track-columns-header{display:none;}
+  }
+
+  .session{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:10px;
+    margin-bottom:10px;
+    overflow:hidden;
+  }
+  .session.changed{border-color:#D9A441;}
+  .session-head{display:flex;align-items:center;gap:12px;padding:12px 14px;cursor:pointer;}
+  .session.full .head-top{justify-content:center;}
+  .session.full .stitle{text-align:center;}
+  .time-badge{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--slate);white-space:nowrap;min-width:88px;}
+  .head-main{flex:1;min-width:0;}
+  .head-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+  .stitle{font-family:'Source Serif 4',serif;font-size:16px;font-weight:600;margin:0;}
+  .tag{font-family:'IBM Plex Mono',monospace;font-size:11px;padding:3px 8px;border-radius:5px;white-space:nowrap;}
+  .track-chip{
+    font-family:'IBM Plex Mono',monospace;font-size:10px;padding:2px 7px;border-radius:5px;
+    border:1px solid var(--border);color:var(--slate);white-space:nowrap;
+  }
+  .changed-chip{
+    font-family:'IBM Plex Mono',monospace;font-size:10px;padding:2px 7px;border-radius:5px;
+    background:#F6D98A;color:#5C3E07;white-space:nowrap;
+  }
+  .chevron{font-size:11px;color:var(--slate);transition:transform 0.15s;flex-shrink:0;}
+  .session.open .chevron{transform:rotate(90deg);}
+  .session-body{display:none;padding:0 14px 14px 100px;font-size:14px;color:var(--ink);}
+  .session.open .session-body{display:block;}
+  .body-line{margin:4px 0;color:var(--slate);font-size:13px;}
+  .body-line b{color:var(--ink);font-weight:500;}
+  .abstract-text{margin-top:8px;line-height:1.6;white-space:pre-wrap;}
+  .placeholder-text{color:var(--slate);font-style:italic;}
+  .hinweis-box{
+    background:var(--amber-bg);color:var(--amber-fg);border-radius:6px;padding:8px 10px;
+    font-size:13px;margin-bottom:8px;
+  }
+
+  .lageplan-section{margin-top:2.5rem;}
+  .section-title{font-family:'IBM Plex Mono',monospace;font-size:12px;text-transform:uppercase;letter-spacing:0.05em;color:var(--slate);margin:0 0 10px;}
+  .lageplan-frame{
+    width:100%;height:480px;border:1px solid var(--border);border-radius:10px;overflow:hidden;
+  }
+  .lageplan-frame iframe{width:100%;height:100%;border:none;}
+  .lageplan-caption{font-size:12px;color:var(--slate);margin-top:6px;}
+
+  .footer-note{margin-top:2.5rem;padding-top:1.25rem;border-top:1px solid var(--border);font-size:12px;color:var(--slate);}
+  .empty{padding:2rem 0;color:var(--slate);font-size:14px;}
+  .state-msg{padding:3rem 0;text-align:center;color:var(--slate);font-size:14px;}
+  .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1 class="sr-only">quBit-Tagungszeitplan, live aus Google Sheets geladen</h1>
+
+  <header>
+    <p class="eyebrow">quBit</p>
+    <h1 id="title">Zeitplan</h1>
+    <p class="subtitle" id="subtitle">Wird geladen…</p>
+
+    <div class="toolbar">
+      <div class="lang-switch" id="langSwitch">
+        <button data-lang="de">DE</button>
+        <button data-lang="en">EN</button>
+      </div>
+    </div>
+    <div id="announcementArea"></div>
+  </header>
+
+  <div id="mainContent">
+    <div class="state-msg" id="loadingMsg">Lade Zeitplan …</div>
+  </div>
+
+  <div id="lageplanArea"></div>
+
+  <div class="footer-note" id="footerNote"></div>
+</div>
+
+<script>
+const SHEET_ID = '1C6HqijXLTJUAFLknmoXQRlZSWyJlxIWYHHjcYpM6uiw';
+
+const TYPES = {
+  plenum:          { de:'Plenarvortrag',   en:'Plenary talk',  bg:'#00549F', fg:'#FFFFFF' },
+  vortrag:         { de:'Vortrag',         en:'Talk',          bg:'#C7DDF2', fg:'#0B3A66' },
+  experimentieren: { de:'Workshop',        en:'Workshop',      bg:'#FDD48F', fg:'#7A4B00' },
+  pause:           { de:'Pause',           en:'Break',         bg:'#CFD1D2', fg:'#4A4B4C' },
+  pitches:         { de:'Standortpitches', en:'Site pitches',  bg:'#B49AC3', fg:'#3E2A52' },
+  abschluss:       { de:'Abschluss',       en:'Closing',       bg:'#006165', fg:'#FFFFFF' },
+  poster:          { de:'Postersession',   en:'Poster session',bg:'#B8D698', fg:'#2F4A1C' },
+  vernetzung:      { de:'Vernetzung',      en:'Networking',    bg:'#DDEBCE', fg:'#3B4A2C' },
+  dinner:          { de:'Dinner',          en:'Dinner',        bg:'#8DC060', fg:'#FFFFFF' },
+  sonstiges:       { de:'Sonstiges',       en:'Other',         bg:'#F2F2F2', fg:'#595959' }
+};
+
+const STR = {
+  de: {
+    trackA:'Track A', trackB:'Track B', noAbstract:'Kein Abstract hinterlegt.',
+    speakerLabel:'Vortragende:', roomLabel:'Raum:', hinweisLabel:'Aktueller Hinweis',
+    footerHint:'Auf einen Programmpunkt tippen, um Details und Abstract aufzuklappen.',
+    loading:'Lade Zeitplan …', errorMsg:'Zeitplan konnte nicht geladen werden. Bitte Seite neu laden.',
+    ankuendigung:'Ankündigung', lageplan:'Lageplan', changed:'Geändert', noEntries:'Noch keine Programmpunkte.'
+  },
+  en: {
+    trackA:'Track A', trackB:'Track B', noAbstract:'No abstract yet.',
+    speakerLabel:'Speaker:', roomLabel:'Room:', hinweisLabel:'Current note',
+    footerHint:'Tap a session to expand details and the abstract.',
+    loading:'Loading schedule …', errorMsg:'Could not load the schedule. Please reload the page.',
+    ankuendigung:'Announcement', lageplan:'Site map', changed:'Changed', noEntries:'No sessions yet.'
+  }
+};
+
+let lang = 'de';
+let state = { days: [], lageplan: null, allg: {} };
+let activeDayIndex = 0;
+const openIds = new Set();
+
+const el = id => document.getElementById(id);
+const t = () => STR[lang];
+
+function sheetUrl(name){
+  return `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(name)}`;
+}
+
+function fetchSheet(name){
+  return new Promise((resolve, reject) => {
+    Papa.parse(sheetUrl(name), {
+      download: true,
+      header: true,
+      skipEmptyLines: true,
+      complete: res => resolve(res.data),
+      error: err => reject(err)
+    });
+  });
+}
+
+function buildDay(label_de, label_en, rows){
+  const sessions = rows
+    .filter(r => (r.Start && r.Start.trim()) || (r.Titel_DE && r.Titel_DE.trim()))
+    .map((r, i) => ({
+      id: label_de + '-' + i,
+      track: (r.Track || '').trim() || 'both',
+      start: (r.Start || '').trim(),
+      end: (r.Ende || '').trim(),
+      type: (r.Typ || '').trim().toLowerCase(),
+      title_de: (r.Titel_DE || '').trim(),
+      title_en: (r.Titel_EN || '').trim(),
+      speaker: (r.Vortragende || '').trim(),
+      room: (r.Raum || '').trim(),
+      abstract: (r.Abstract || '').trim(),
+      hinweis: (r.Hinweis || '').trim()
+    }));
+  return { label_de, label_en, sessions };
+}
+
+function fieldMap(rows){
+  const map = {};
+  rows.forEach(r => {
+    if(r.Feld) map[r.Feld.trim()] = (r.Wert || '').trim();
+  });
+  return map;
+}
+
+function driveEmbedUrl(link){
+  if(!link) return null;
+  let m = link.match(/\/d\/([a-zA-Z0-9_-]+)/);
+  let id = m ? m[1] : null;
+  if(!id){
+    m = link.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+    id = m ? m[1] : null;
+  }
+  if(!id) return null;
+  return `https://drive.google.com/file/d/${id}/preview`;
+}
+
+async function loadAll(){
+  try{
+    const [mo, di, mi, lp, allg] = await Promise.all([
+      fetchSheet('Montag'), fetchSheet('Dienstag'), fetchSheet('Mittwoch'),
+      fetchSheet('Lageplan'), fetchSheet('Allgemeines')
+    ]);
+    state.days = [
+      buildDay('Montag', 'Monday', mo),
+      buildDay('Dienstag', 'Tuesday', di),
+      buildDay('Mittwoch', 'Wednesday', mi)
+    ];
+    const lpMap = fieldMap(lp);
+    state.lageplan = {
+      link: lpMap['Bild-/PDF-Link'] || '',
+      caption: lpMap['Beschriftung (optional)'] || ''
+    };
+    state.allg = fieldMap(allg);
+    render();
+  }catch(e){
+    console.error(e);
+    el('mainContent').innerHTML = `<p class="state-msg">${t().errorMsg}</p>`;
+  }
+}
+
+el('langSwitch').addEventListener('click', (e) => {
+  const btn = e.target.closest('button[data-lang]');
+  if(!btn) return;
+  lang = btn.dataset.lang;
+  render();
+});
+
+function timeToMinutes(time){
+  if(!time) return 99999;
+  const [h, m] = time.split(':').map(Number);
+  return h * 60 + m;
+}
+
+function trackLabel(track){
+  const L = t();
+  if(track === 'A') return L.trackA;
+  if(track === 'B') return L.trackB;
+  return '';
+}
+
+function buildSessionCard(sess){
+  const L = t();
+  const type = TYPES[sess.type] || TYPES.sonstiges;
+  const title = lang === 'de' ? sess.title_de : sess.title_en;
+  const card = document.createElement('div');
+  const isFull = sess.track === 'both';
+  const hasHinweis = !!sess.hinweis;
+  card.className = 'session' + (isFull ? ' full' : '') + (hasHinweis ? ' changed' : '') + (openIds.has(sess.id) ? ' open' : '');
+  const timeText = sess.start ? (sess.end ? `${sess.start} – ${sess.end}` : `${lang === 'de' ? 'ab' : 'from'} ${sess.start}`) : '';
+  const trackChip = trackLabel(sess.track) ? `<span class="track-chip">${trackLabel(sess.track)}</span>` : '';
+  const changedChip = hasHinweis ? `<span class="changed-chip">${L.changed}</span>` : '';
+  card.innerHTML = `
+    <div class="session-head">
+      <span class="time-badge">${timeText}</span>
+      <div class="head-main">
+        <div class="head-top">
+          <p class="stitle">${escapeHtml(title || '')}</p>
+          <span class="tag" style="background:${type.bg};color:${type.fg}">${type[lang]}</span>
+          ${trackChip}
+          ${changedChip}
+        </div>
+      </div>
+      <span class="chevron">▸</span>
+    </div>
+    <div class="session-body">
+      ${sess.hinweis ? `<div class="hinweis-box"><b>${L.hinweisLabel}:</b> ${escapeHtml(sess.hinweis)}</div>` : ''}
+      ${sess.speaker ? `<p class="body-line"><b>${L.speakerLabel}</b> ${escapeHtml(sess.speaker)}</p>` : ''}
+      ${sess.room ? `<p class="body-line"><b>${L.roomLabel}</b> ${escapeHtml(sess.room)}</p>` : ''}
+      ${sess.abstract
+        ? `<div class="abstract-text">${escapeHtml(sess.abstract)}</div>`
+        : `<p class="placeholder-text">${L.noAbstract}</p>`}
+    </div>
+  `;
+  card.querySelector('.session-head').addEventListener('click', () => {
+    if(openIds.has(sess.id)) openIds.delete(sess.id); else openIds.add(sess.id);
+    card.classList.toggle('open');
+  });
+  return card;
+}
+
+function groupByStart(sessions){
+  const map = new Map();
+  sessions.forEach(sess => {
+    const key = sess.start || ('_' + sess.id);
+    if(!map.has(key)) map.set(key, []);
+    map.get(key).push(sess);
+  });
+  return [...map.values()].sort((a, b) => timeToMinutes(a[0].start) - timeToMinutes(b[0].start));
+}
+
+function renderDay(day){
+  const wrap = document.createElement('div');
+  const L = t();
+  if(day.sessions.length === 0){
+    wrap.innerHTML = `<p class="empty">${L.noEntries}</p>`;
+    return wrap;
+  }
+  const hasParallelTracks = day.sessions.some(sess => sess.track === 'A' || sess.track === 'B');
+  if(hasParallelTracks){
+    const header = document.createElement('div');
+    header.className = 'track-columns-header';
+    header.innerHTML = `<span>${L.trackA}</span><span>${L.trackB}</span>`;
+    wrap.appendChild(header);
+  }
+  const groups = groupByStart(day.sessions);
+  groups.forEach(group => {
+    const bothArr = group.filter(sess => sess.track === 'both');
+    const aArr = group.filter(sess => sess.track === 'A');
+    const bArr = group.filter(sess => sess.track === 'B');
+    bothArr.forEach(sess => wrap.appendChild(buildSessionCard(sess)));
+    if(aArr.length > 0 || bArr.length > 0){
+      const row = document.createElement('div');
+      row.className = 'track-row';
+      const colA = document.createElement('div');
+      colA.className = 'track-col';
+      aArr.forEach(sess => colA.appendChild(buildSessionCard(sess)));
+      const colB = document.createElement('div');
+      colB.className = 'track-col';
+      bArr.forEach(sess => colB.appendChild(buildSessionCard(sess)));
+      row.appendChild(colA);
+      row.appendChild(colB);
+      wrap.appendChild(row);
+    }
+  });
+  return wrap;
+}
+
+function escapeHtml(str){
+  const div = document.createElement('div');
+  div.textContent = str || '';
+  return div.innerHTML;
+}
+
+function renderTabs(){
+  const tabs = document.createElement('div');
+  tabs.className = 'tabs';
+  state.days.forEach((day, i) => {
+    const tab = document.createElement('button');
+    tab.className = 'tab' + (i === activeDayIndex ? ' active' : '');
+    tab.textContent = lang === 'de' ? day.label_de : day.label_en;
+    tab.addEventListener('click', () => { activeDayIndex = i; render(); });
+    tabs.appendChild(tab);
+  });
+  return tabs;
+}
+
+function renderLageplan(){
+  const area = el('lageplanArea');
+  area.innerHTML = '';
+  if(!state.lageplan || !state.lageplan.link) return;
+  const embed = driveEmbedUrl(state.lageplan.link);
+  if(!embed) return;
+  const L = t();
+  const section = document.createElement('div');
+  section.className = 'lageplan-section';
+  section.innerHTML = `
+    <p class="section-title">${L.lageplan}</p>
+    <div class="lageplan-frame"><iframe src="${embed}" allow="autoplay"></iframe></div>
+    ${state.lageplan.caption ? `<p class="lageplan-caption">${escapeHtml(state.lageplan.caption)}</p>` : ''}
+  `;
+  area.appendChild(section);
+}
+
+function render(){
+  const L = t();
+  const titleKey = lang === 'de' ? 'Titel (DE)' : 'Titel (EN)';
+  const subKey = lang === 'de' ? 'Untertitel (DE)' : 'Untertitel (EN)';
+  const annKey = lang === 'de' ? 'Ankündigung (DE)' : 'Ankündigung (EN)';
+
+  el('title').textContent = state.allg[titleKey] || 'Zeitplan';
+  el('subtitle').textContent = state.allg[subKey] || '';
+  el('footerNote').textContent = L.footerHint;
+
+  const ann = state.allg[annKey];
+  const annArea = el('announcementArea');
+  annArea.innerHTML = ann
+    ? `<div class="announcement"><b>${L.ankuendigung}</b>${escapeHtml(ann)}</div>`
+    : '';
+
+  el('langSwitch').querySelectorAll('button').forEach(b => {
+    b.classList.toggle('active', b.dataset.lang === lang);
+  });
+
+  const content = el('mainContent');
+  content.innerHTML = '';
+  content.appendChild(renderTabs());
+  const day = state.days[activeDayIndex] || state.days[0];
+  if(day) content.appendChild(renderDay(day));
+
+  renderLageplan();
+}
+
+el('subtitle').textContent = STR.de.loading;
+loadAll();
+</script>
+</body>
+</html>
