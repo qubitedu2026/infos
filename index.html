@@ -265,7 +265,7 @@ const TYPES = {
 const STR = {
   de: {
     trackA:'Track A', trackB:'Track B', noAbstract:'Kein Abstract hinterlegt.',
-    speakerLabel:'Vortragende:', roomLabel:'Raum:', locationLabel:'Ort:', titleLabel:'Titel:', authorsLabel:'Autor:innen:', hinweisLabel:'Aktueller Hinweis',
+    speakerLabel:'Vortragende:', roomLabel:'Raum:', locationLabel:'Ort:', titleLabel:'Titel:', authorsLabel:'Autor:innen:', institutionLabel:'Institution:', hinweisLabel:'Aktueller Hinweis',
     feedbackTitle:'Feedback', feedbackPlaceholder:'Feedback an die Organisation …',
     feedbackButton:'Senden', feedbackConfirm:'Wirklich absenden?', feedbackSending:'Wird gesendet …',
     feedbackSent:'Danke, angekommen!', feedbackError:'Senden fehlgeschlagen, bitte nochmal versuchen.', feedbackEmpty:'Bitte erst etwas eintragen.',
@@ -276,7 +276,7 @@ const STR = {
   },
   en: {
     trackA:'Track A', trackB:'Track B', noAbstract:'No abstract yet.',
-    speakerLabel:'Speaker:', roomLabel:'Room:', locationLabel:'Location:', titleLabel:'Title:', authorsLabel:'Authors:', hinweisLabel:'Current note',
+    speakerLabel:'Speaker:', roomLabel:'Room:', locationLabel:'Location:', titleLabel:'Title:', authorsLabel:'Authors:', institutionLabel:'Institution:', hinweisLabel:'Current note',
     feedbackTitle:'Feedback', feedbackPlaceholder:'Feedback for the organisers …',
     feedbackButton:'Send', feedbackConfirm:'Really send this?', feedbackSending:'Sending …',
     feedbackSent:'Thanks, received!', feedbackError:'Sending failed, please try again.', feedbackEmpty:'Please enter something first.',
@@ -340,6 +340,7 @@ function buildDay(label_de, label_en, rows){
       title_en: (r.Titel_EN || '').trim(),
       speaker: (r.Vortragende || '').trim(),
       authors: (r.Autor_innen || '').trim(),
+      institution: (r.Institution || '').trim(),
       room: (r.Raum || '').trim(),
       abstract: (r.Abstract || '').trim(),
       abstract_en: (r.Abstract_EN || '').trim(),
@@ -558,6 +559,7 @@ function buildSessionCard(sess){
       ${sess.hinweis ? `<div class="hinweis-box"><b>${L.hinweisLabel}:</b> ${escapeHtml(sess.hinweis)}</div>` : ''}
       ${isPoster ? buildPosterList() : isWorkshop ? buildWorkshopList(workshopSlot) : `
         ${sess.speaker ? `<p class="body-line"><b>${L.speakerLabel}</b> ${escapeHtml(sess.speaker)}</p>` : ''}
+        ${sess.institution ? `<p class="body-line"><b>${L.institutionLabel}</b> ${escapeHtml(sess.institution)}</p>` : ''}
         ${isTalk ? `<p class="body-line"><b>${L.titleLabel}</b> ${escapeHtml(title || '')}</p>` : ''}
         ${sess.room ? `<p class="body-line"><b>${sess.type === 'dinner' ? L.locationLabel : L.roomLabel}</b> ${sess.type === 'dinner' ? `<a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(sess.room)}" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline;">${escapeHtml(sess.room)}</a>` : escapeHtml(sess.room)}</p>` : ''}
         ${sess.authors ? `<p class="body-line"><b>${L.authorsLabel}</b> ${escapeHtml(sess.authors)}</p>` : ''}
