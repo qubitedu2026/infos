@@ -533,7 +533,7 @@ function buildSessionCard(sess){
       ${isPoster ? buildPosterList() : isWorkshop ? buildWorkshopList(sess.slot) : `
         ${sess.speaker ? `<p class="body-line"><b>${L.speakerLabel}</b> ${escapeHtml(sess.speaker)}</p>` : ''}
         ${isTalk ? `<p class="body-line"><b>${L.titleLabel}</b> ${escapeHtml(title || '')}</p>` : ''}
-        ${sess.room ? `<p class="body-line"><b>${sess.type === 'dinner' ? L.locationLabel : L.roomLabel}</b> <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(sess.room)}" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline;">${escapeHtml(sess.room)}</a></p>` : ''}
+        ${sess.room ? `<p class="body-line"><b>${sess.type === 'dinner' ? L.locationLabel : L.roomLabel}</b> ${sess.type === 'dinner' ? `<a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(sess.room)}" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline;">${escapeHtml(sess.room)}</a>` : escapeHtml(sess.room)}</p>` : ''}
         ${sess.authors ? `<p class="body-line"><b>${L.authorsLabel}</b> ${escapeHtml(sess.authors)}</p>` : ''}
         ${(() => { const a = (lang === 'en' && sess.abstract_en) ? sess.abstract_en : sess.abstract; return a ? `<div class="abstract-text">${escapeHtml(a)}</div>` : ''; })()}
       `}
