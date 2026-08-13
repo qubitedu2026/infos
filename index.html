@@ -72,6 +72,7 @@
   }
   .lang-switch button.active{background:var(--ink);color:var(--paper);}
   .lang-switch button:hover{opacity:0.85;}
+  .feedback-jump{white-space:nowrap;}
 
   .announcement{
     margin-top:1.25rem;
@@ -94,7 +95,7 @@
 
   .track-columns-header{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px;}
   .track-col-head{display:flex;align-items:center;gap:12px;padding:0 14px 6px;border-bottom:1px solid var(--border);}
-  .track-col-head .time-gutter{min-width:88px;flex-shrink:0;}
+  .track-col-head .time-gutter{width:100px;flex-shrink:0;}
   .track-col-head .col-label{
     flex:1;font-family:'IBM Plex Mono',monospace;font-size:11px;text-transform:uppercase;
     letter-spacing:0.05em;color:var(--slate);text-align:center;
@@ -126,7 +127,7 @@
     font-family:'Source Serif 4',serif;font-size:16px;font-weight:600;
     padding:5px 12px;border-radius:7px;display:inline-block;line-height:1.3;
   }
-  .time-badge{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--slate);white-space:nowrap;min-width:88px;}
+  .time-badge{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--slate);white-space:nowrap;width:100px;flex-shrink:0;}
   .head-main{flex:1;min-width:0;}
   .head-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
   .head-top-stacked{flex-direction:column;align-items:flex-start;gap:5px;}
@@ -185,9 +186,9 @@
   .lageplan-section{margin-top:2.5rem;}
   .section-title{font-family:'IBM Plex Mono',monospace;font-size:12px;text-transform:uppercase;letter-spacing:0.05em;color:var(--slate);margin:0 0 10px;}
   .lageplan-frame{
-    width:100%;height:480px;border:1px solid var(--border);border-radius:10px;overflow:hidden;
+    width:100%;max-height:600px;border:1px solid var(--border);border-radius:10px;overflow:hidden;background:var(--paper);
   }
-  .lageplan-frame iframe{width:100%;height:100%;border:none;}
+  .lageplan-frame iframe{width:100%;height:480px;border:none;background:var(--paper);}
   .lageplan-caption{font-size:12px;color:var(--slate);margin-top:6px;}
 
   .footer-note{margin-top:2.5rem;padding-top:1.25rem;border-top:1px solid var(--border);font-size:12px;color:var(--slate);}
@@ -222,6 +223,7 @@
             <button data-lang="de">DE</button>
             <button data-lang="en">EN</button>
           </div>
+          <button class="feedback-jump ghost small" id="feedbackJump"></button>
         </div>
       </div>
     </div>
@@ -234,7 +236,7 @@
 
   <div id="lageplanArea"></div>
 
-  <div class="feedback-section">
+  <div class="feedback-section" id="feedbackSection">
     <p class="section-title" id="feedbackTitle"></p>
     <textarea id="feedbackText" class="feedback-textarea"></textarea>
     <div class="feedback-row">
@@ -266,7 +268,7 @@ const STR = {
   de: {
     trackA:'Track A', trackB:'Track B', noAbstract:'Kein Abstract hinterlegt.',
     speakerLabel:'Vortragende:', roomLabel:'Raum:', locationLabel:'Ort:', titleLabel:'Titel:', authorsLabel:'Autor:innen:', institutionLabel:'Institution:', hinweisLabel:'Aktueller Hinweis',
-    feedbackTitle:'Feedback', feedbackPlaceholder:'Feedback an die Organisation …',
+    feedbackTitle:'Feedback', feedbackPlaceholder:'Feedback an die Organisation …', feedbackJump:'💬 Feedback',
     feedbackButton:'Senden', feedbackConfirm:'Wirklich absenden?', feedbackSending:'Wird gesendet …',
     feedbackSent:'Danke, angekommen!', feedbackError:'Senden fehlgeschlagen, bitte nochmal versuchen.', feedbackEmpty:'Bitte erst etwas eintragen.',
     footerHint:'Auf einen Programmpunkt tippen, um Details und Abstract aufzuklappen.',
@@ -277,7 +279,7 @@ const STR = {
   en: {
     trackA:'Track A', trackB:'Track B', noAbstract:'No abstract yet.',
     speakerLabel:'Speaker:', roomLabel:'Room:', locationLabel:'Location:', titleLabel:'Title:', authorsLabel:'Authors:', institutionLabel:'Institution:', hinweisLabel:'Current note',
-    feedbackTitle:'Feedback', feedbackPlaceholder:'Feedback for the organisers …',
+    feedbackTitle:'Feedback', feedbackPlaceholder:'Feedback for the organisers …', feedbackJump:'💬 Feedback',
     feedbackButton:'Send', feedbackConfirm:'Really send this?', feedbackSending:'Sending …',
     feedbackSent:'Thanks, received!', feedbackError:'Sending failed, please try again.', feedbackEmpty:'Please enter something first.',
     footerHint:'Tap a session to expand details and the abstract.',
@@ -434,6 +436,11 @@ async function loadAll(){
     el('mainContent').innerHTML = `<p class="state-msg">${t().errorMsg}</p>`;
   }
 }
+
+el('feedbackJump').addEventListener('click', () => {
+  el('feedbackSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  el('feedbackText').focus();
+});
 
 el('langSwitch').addEventListener('click', (e) => {
   const btn = e.target.closest('button[data-lang]');
@@ -664,7 +671,7 @@ function renderLageplan(){
   section.innerHTML = `
     <p class="section-title">${L.lageplan}</p>
     <div class="lageplan-frame">
-      <img id="lageplanImg" src="${imgUrl || ''}" alt="Lageplan" style="width:100%;height:100%;object-fit:contain;background:var(--paper);display:block;">
+      <img id="lageplanImg" src="${imgUrl || ''}" alt="Lageplan" style="width:100%;height:auto;max-height:600px;object-fit:contain;background:var(--paper);display:block;">
       <iframe id="lageplanFallback" src="${embed || ''}" style="display:none;width:100%;height:100%;border:none;" allow="autoplay"></iframe>
     </div>
     ${state.lageplan.caption ? `<p class="lageplan-caption">${escapeHtml(state.lageplan.caption)}</p>` : ''}
@@ -708,6 +715,7 @@ function render(){
   if(day) content.appendChild(renderDay(day));
 
   el('feedbackTitle').textContent = L.feedbackTitle;
+  el('feedbackJump').textContent = L.feedbackJump;
   el('feedbackText').placeholder = L.feedbackPlaceholder;
   el('feedbackSubmit').textContent = L.feedbackButton;
 
