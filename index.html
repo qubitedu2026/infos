@@ -512,10 +512,12 @@ function buildSessionCard(sess){
   const isTalk = sess.type === 'vortrag';
   const isPoster = sess.type === 'poster';
   const isWorkshop = sess.type === 'experimentieren' && sess.track === 'both';
+  const workshopSlotMatch = isWorkshop ? (sess.title_de + ' ' + sess.title_en).match(/Slot\s*(\d+)/i) : null;
+  const workshopSlot = workshopSlotMatch ? parseInt(workshopSlotMatch[1], 10) : null;
   const hasDetails = isPoster
     ? (state.posters && state.posters.length > 0)
     : isWorkshop
-      ? (state.workshops && state.workshops.some(w => w.slot === sess.slot))
+      ? (state.workshops && state.workshops.some(w => w.slot === workshopSlot))
       : !!(sess.speaker || sess.room || sess.abstract || sess.hinweis);
   const isFull = sess.track === 'both';
   const hasHinweis = !!sess.hinweis;
@@ -554,7 +556,7 @@ function buildSessionCard(sess){
     ${hasDetails ? `
     <div class="session-body${(isPoster || isWorkshop) ? ' session-body-wide' : ''}">
       ${sess.hinweis ? `<div class="hinweis-box"><b>${L.hinweisLabel}:</b> ${escapeHtml(sess.hinweis)}</div>` : ''}
-      ${isPoster ? buildPosterList() : isWorkshop ? buildWorkshopList(sess.slot) : `
+      ${isPoster ? buildPosterList() : isWorkshop ? buildWorkshopList(workshopSlot) : `
         ${sess.speaker ? `<p class="body-line"><b>${L.speakerLabel}</b> ${escapeHtml(sess.speaker)}</p>` : ''}
         ${isTalk ? `<p class="body-line"><b>${L.titleLabel}</b> ${escapeHtml(title || '')}</p>` : ''}
         ${sess.room ? `<p class="body-line"><b>${sess.type === 'dinner' ? L.locationLabel : L.roomLabel}</b> ${sess.type === 'dinner' ? `<a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(sess.room)}" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline;">${escapeHtml(sess.room)}</a>` : escapeHtml(sess.room)}</p>` : ''}
