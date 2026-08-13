@@ -114,6 +114,7 @@
   @media (max-width:520px){
     .track-row{grid-template-columns:1fr;}
     .track-columns-header{display:none;}
+    .session.full .session-head{display:flex;}
   }
 
   .session{
@@ -134,6 +135,7 @@
     padding:5px 12px;border-radius:7px;display:inline-block;line-height:1.3;
   }
   .time-badge{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--slate);white-space:nowrap;width:100px;flex-shrink:0;}
+  .session.full .session-head{display:grid;grid-template-columns:110px 1fr 110px;gap:12px;align-items:center;}
   .head-main{flex:1;min-width:0;}
   .head-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
   .head-top-stacked{flex-direction:column;align-items:flex-start;gap:5px;}
