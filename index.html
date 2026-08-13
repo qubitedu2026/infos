@@ -476,7 +476,7 @@ function buildPosterList(){
   const L = t();
   const items = (state.posters || []).map(p => {
     const ptitle = pickLang(p.title_de, p.title_en);
-    const pabstract = (lang === 'en' && p.abstract_en) ? p.abstract_en : p.abstract;
+    const pabstract = pickLang(p.abstract, p.abstract_en);
     const hasAbstract = !!pabstract;
     return `
       <div class="poster-item${hasAbstract ? '' : ' poster-item-flat'}" data-poster-id="${p.id}">
@@ -522,7 +522,7 @@ function buildSessionCard(sess){
     ? (state.posters && state.posters.length > 0)
     : isWorkshop
       ? (state.workshops && state.workshops.some(w => w.slot === workshopSlot))
-      : !!(sess.speaker || sess.room || sess.abstract || sess.hinweis);
+      : !!(sess.speaker || sess.room || sess.abstract || sess.abstract_en || sess.hinweis);
   const isFull = sess.track === 'both';
   const hasHinweis = !!sess.hinweis;
 
@@ -566,7 +566,7 @@ function buildSessionCard(sess){
         ${isTalk ? `<p class="body-line"><b>${L.titleLabel}</b> ${escapeHtml(title || '')}</p>` : ''}
         ${sess.room ? `<p class="body-line"><b>${sess.type === 'dinner' ? L.locationLabel : L.roomLabel}</b> ${sess.type === 'dinner' ? `<a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(sess.room)}" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline;">${escapeHtml(sess.room)}</a>` : escapeHtml(sess.room)}</p>` : ''}
         ${sess.authors ? `<p class="body-line"><b>${L.authorsLabel}</b> ${escapeHtml(sess.authors)}</p>` : ''}
-        ${(() => { const a = (lang === 'en' && sess.abstract_en) ? sess.abstract_en : sess.abstract; return a ? `<div class="abstract-text">${escapeHtml(a)}</div>` : ''; })()}
+        ${(() => { const a = pickLang(sess.abstract, sess.abstract_en); return a ? `<div class="abstract-text">${escapeHtml(a)}</div>` : ''; })()}
       `}
     </div>` : ''}
   `;
