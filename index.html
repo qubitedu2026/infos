@@ -65,6 +65,15 @@
   .subtitle{font-size:15px;color:var(--slate);margin:0;}
 
   .toolbar{display:flex;align-items:center;gap:10px;margin-top:1.25rem;flex-wrap:wrap;}
+  button{
+    font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:500;
+    border:1px solid var(--ink);background:var(--paper);color:var(--ink);
+    padding:7px 14px;border-radius:6px;cursor:pointer;
+  }
+  button:hover{opacity:0.85;}
+  button.small{padding:4px 10px;font-size:12px;}
+  button.primary{background:var(--ink);color:var(--paper);}
+  button.ghost{border-color:var(--border);color:var(--slate);background:transparent;}
   .lang-switch{display:flex;border:1px solid var(--ink);border-radius:6px;overflow:hidden;}
   .lang-switch button{
     font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:500;
@@ -94,11 +103,10 @@
   .tab.active{color:var(--ink);border-bottom-color:var(--ink);font-weight:500;}
 
   .track-columns-header{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px;}
-  .track-col-head{display:flex;align-items:center;gap:12px;padding:0 14px 6px;border-bottom:1px solid var(--border);}
-  .track-col-head .time-gutter{width:100px;flex-shrink:0;}
-  .track-col-head .col-label{
-    flex:1;font-family:'IBM Plex Mono',monospace;font-size:11px;text-transform:uppercase;
-    letter-spacing:0.05em;color:var(--slate);text-align:center;
+  .track-columns-header span{
+    display:block;text-align:center;
+    font-family:'IBM Plex Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:0.05em;
+    color:var(--slate);padding:0 0 6px;border-bottom:1px solid var(--border);
   }
   .track-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;align-items:start;}
   .track-col{display:flex;flex-direction:column;gap:10px;min-width:0;}
@@ -186,9 +194,10 @@
   .lageplan-section{margin-top:2.5rem;}
   .section-title{font-family:'IBM Plex Mono',monospace;font-size:12px;text-transform:uppercase;letter-spacing:0.05em;color:var(--slate);margin:0 0 10px;}
   .lageplan-frame{
-    width:100%;max-height:600px;border:1px solid var(--border);border-radius:10px;overflow:hidden;background:var(--paper);
+    width:100%;height:420px;border:1px solid var(--border);border-radius:10px;overflow:hidden;background:var(--paper);
+    transition:height 0.15s;
   }
-  .lageplan-frame iframe{width:100%;height:480px;border:none;background:var(--paper);}
+  .lageplan-frame iframe{width:100%;height:100%;border:none;background:var(--paper);}
   .lageplan-caption{font-size:12px;color:var(--slate);margin-top:6px;}
 
   .footer-note{margin-top:2.5rem;padding-top:1.25rem;border-top:1px solid var(--border);font-size:12px;color:var(--slate);}
@@ -268,7 +277,7 @@ const STR = {
   de: {
     trackA:'Track A', trackB:'Track B', noAbstract:'Kein Abstract hinterlegt.',
     speakerLabel:'Vortragende:', roomLabel:'Raum:', locationLabel:'Ort:', titleLabel:'Titel:', authorsLabel:'Autor:innen:', institutionLabel:'Institution:', hinweisLabel:'Aktueller Hinweis',
-    feedbackTitle:'Feedback', feedbackPlaceholder:'Feedback an die Organisation …', feedbackJump:'💬 Feedback',
+    feedbackTitle:'Feedback', feedbackPlaceholder:'Feedback an die Organisation …', feedbackJump:'Feedback',
     feedbackButton:'Senden', feedbackConfirm:'Wirklich absenden?', feedbackSending:'Wird gesendet …',
     feedbackSent:'Danke, angekommen!', feedbackError:'Senden fehlgeschlagen, bitte nochmal versuchen.', feedbackEmpty:'Bitte erst etwas eintragen.',
     footerHint:'Auf einen Programmpunkt tippen, um Details und Abstract aufzuklappen.',
@@ -279,7 +288,7 @@ const STR = {
   en: {
     trackA:'Track A', trackB:'Track B', noAbstract:'No abstract yet.',
     speakerLabel:'Speaker:', roomLabel:'Room:', locationLabel:'Location:', titleLabel:'Title:', authorsLabel:'Authors:', institutionLabel:'Institution:', hinweisLabel:'Current note',
-    feedbackTitle:'Feedback', feedbackPlaceholder:'Feedback for the organisers …', feedbackJump:'💬 Feedback',
+    feedbackTitle:'Feedback', feedbackPlaceholder:'Feedback for the organisers …', feedbackJump:'Feedback',
     feedbackButton:'Send', feedbackConfirm:'Really send this?', feedbackSending:'Sending …',
     feedbackSent:'Thanks, received!', feedbackError:'Sending failed, please try again.', feedbackEmpty:'Please enter something first.',
     footerHint:'Tap a session to expand details and the abstract.',
@@ -610,10 +619,7 @@ function renderDay(day){
   if(hasParallelTracks){
     const header = document.createElement('div');
     header.className = 'track-columns-header';
-    header.innerHTML = `
-      <div class="track-col-head"><span class="time-gutter"></span><span class="col-label">${L.trackA}</span></div>
-      <div class="track-col-head"><span class="time-gutter"></span><span class="col-label">${L.trackB}</span></div>
-    `;
+    header.innerHTML = `<span>${L.trackA}</span><span>${L.trackB}</span>`;
     wrap.appendChild(header);
   }
   const groups = groupByStart(day.sessions);
@@ -671,12 +677,21 @@ function renderLageplan(){
   section.innerHTML = `
     <p class="section-title">${L.lageplan}</p>
     <div class="lageplan-frame">
-      <img id="lageplanImg" src="${imgUrl || ''}" alt="Lageplan" style="width:100%;height:auto;max-height:600px;object-fit:contain;background:var(--paper);display:block;">
+      <img id="lageplanImg" src="${imgUrl || ''}" alt="Lageplan" style="width:100%;height:100%;object-fit:contain;background:var(--paper);display:block;">
       <iframe id="lageplanFallback" src="${embed || ''}" style="display:none;width:100%;height:100%;border:none;" allow="autoplay"></iframe>
     </div>
     ${state.lageplan.caption ? `<p class="lageplan-caption">${escapeHtml(state.lageplan.caption)}</p>` : ''}
   `;
   const img = section.querySelector('#lageplanImg');
+  img.style.objectFit = 'cover';
+  img.addEventListener('load', () => {
+    const frame = img.closest('.lageplan-frame');
+    if(!frame || !img.naturalWidth) return;
+    const ratio = img.naturalHeight / img.naturalWidth;
+    const computedHeight = Math.round(frame.offsetWidth * ratio);
+    frame.style.height = Math.min(computedHeight, 600) + 'px';
+    img.style.objectFit = computedHeight > 600 ? 'contain' : 'cover';
+  });
   img.addEventListener('error', () => {
     img.style.display = 'none';
     if(embed) section.querySelector('#lageplanFallback').style.display = 'block';
