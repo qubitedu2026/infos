@@ -359,7 +359,9 @@ function buildPosters(rows){
       title_en: (r.Titel_EN || '').trim(),
       author: (r.Autor_in || '').trim(),
       authors: (r.Autor_innen || '').trim(),
-      abstract: (r.Abstract || '').trim()
+      institution: (r.Institution || '').trim(),
+      abstract: (r.Abstract || '').trim(),
+      abstract_en: (r.Abstract_EN || '').trim()
     }));
 }
 
@@ -474,19 +476,20 @@ function buildPosterList(){
   const L = t();
   const items = (state.posters || []).map(p => {
     const ptitle = pickLang(p.title_de, p.title_en);
-    const hasAbstract = !!p.abstract;
+    const pabstract = (lang === 'en' && p.abstract_en) ? p.abstract_en : p.abstract;
+    const hasAbstract = !!pabstract;
     return `
       <div class="poster-item${hasAbstract ? '' : ' poster-item-flat'}" data-poster-id="${p.id}">
         <div class="poster-item-head">
           <div class="poster-item-text">
             <span class="poster-title">${escapeHtml(ptitle)}</span>
-            <span class="poster-author">${escapeHtml(p.author)}</span>
+            <span class="poster-author">${escapeHtml(p.author)}${p.institution ? ' · ' + escapeHtml(p.institution) : ''}</span>
           </div>
           ${hasAbstract ? '<span class="poster-chevron">▸</span>' : ''}
         </div>
         ${hasAbstract ? `<div class="poster-item-body">
           ${p.authors ? `<p class="body-line" style="margin-bottom:6px;"><b>${L.authorsLabel}</b> ${escapeHtml(p.authors)}</p>` : ''}
-          <div class="abstract-text">${escapeHtml(p.abstract)}</div>
+          <div class="abstract-text">${escapeHtml(pabstract)}</div>
         </div>` : ''}
       </div>
     `;
