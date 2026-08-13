@@ -344,7 +344,7 @@ function buildDay(label_de, label_en, rows){
       abstract: (r.Abstract || '').trim(),
       abstract_en: (r.Abstract_EN || '').trim(),
       hinweis: (r.Hinweis || '').trim(),
-      slot: (r.Vortragsnummer || '').toString().trim() ? parseInt(r.Vortragsnummer, 10) : null
+      slot: (r.Vortragsnummer || '').toString().trim() || null
     }));
   return { label_de, label_en, sessions };
 }
