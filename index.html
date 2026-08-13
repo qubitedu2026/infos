@@ -191,6 +191,15 @@
   .lageplan-caption{font-size:12px;color:var(--slate);margin-top:6px;}
 
   .footer-note{margin-top:2.5rem;padding-top:1.25rem;border-top:1px solid var(--border);font-size:12px;color:var(--slate);}
+  .feedback-section{margin-top:2.5rem;}
+  .feedback-textarea{
+    width:100%;min-height:100px;font-family:'Space Grotesk',sans-serif;font-size:14px;
+    padding:10px 12px;border:1px solid var(--border);border-radius:8px;
+    background:var(--card);color:var(--ink);resize:vertical;box-sizing:border-box;
+  }
+  .feedback-textarea:focus{outline:1px solid var(--brand);}
+  .feedback-row{display:flex;align-items:center;gap:12px;margin-top:8px;}
+  .feedback-status{font-size:12px;color:var(--slate);}
   .empty{padding:2rem 0;color:var(--slate);font-size:14px;}
   .state-msg{padding:3rem 0;text-align:center;color:var(--slate);font-size:14px;}
   .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);}
@@ -225,6 +234,15 @@
 
   <div id="lageplanArea"></div>
 
+  <div class="feedback-section">
+    <p class="section-title" id="feedbackTitle"></p>
+    <textarea id="feedbackText" class="feedback-textarea"></textarea>
+    <div class="feedback-row">
+      <button class="small primary" id="feedbackSubmit"></button>
+      <span class="feedback-status" id="feedbackStatus"></span>
+    </div>
+  </div>
+
   <div class="footer-note" id="footerNote"></div>
 </div>
 
@@ -248,6 +266,9 @@ const STR = {
   de: {
     trackA:'Track A', trackB:'Track B', noAbstract:'Kein Abstract hinterlegt.',
     speakerLabel:'Vortragende:', roomLabel:'Raum:', locationLabel:'Ort:', titleLabel:'Titel:', authorsLabel:'Autor:innen:', hinweisLabel:'Aktueller Hinweis',
+    feedbackTitle:'Fragen & Feedback', feedbackPlaceholder:'Frage, Hinweis oder Feedback an die Organisation …',
+    feedbackButton:'Senden', feedbackConfirm:'Wirklich absenden?', feedbackSending:'Wird gesendet …',
+    feedbackSent:'Danke, angekommen!', feedbackError:'Senden fehlgeschlagen, bitte nochmal versuchen.', feedbackEmpty:'Bitte erst etwas eintragen.',
     footerHint:'Auf einen Programmpunkt tippen, um Details und Abstract aufzuklappen.',
     loading:'Lade Zeitplan …', errorMsg:'Zeitplan konnte nicht geladen werden. Bitte Seite neu laden.',
     ankuendigung:'Ankündigung', lageplan:'Lageplan', changed:'Geändert', noEntries:'Noch keine Programmpunkte.',
@@ -256,6 +277,9 @@ const STR = {
   en: {
     trackA:'Track A', trackB:'Track B', noAbstract:'No abstract yet.',
     speakerLabel:'Speaker:', roomLabel:'Room:', locationLabel:'Location:', titleLabel:'Title:', authorsLabel:'Authors:', hinweisLabel:'Current note',
+    feedbackTitle:'Questions & Feedback', feedbackPlaceholder:'Question, note, or feedback for the organisers …',
+    feedbackButton:'Send', feedbackConfirm:'Really send this?', feedbackSending:'Sending …',
+    feedbackSent:'Thanks, received!', feedbackError:'Sending failed, please try again.', feedbackEmpty:'Please enter something first.',
     footerHint:'Tap a session to expand details and the abstract.',
     loading:'Loading schedule …', errorMsg:'Could not load the schedule. Please reload the page.',
     ankuendigung:'Announcement', lageplan:'Site map', changed:'Changed', noEntries:'No sessions yet.',
@@ -676,10 +700,42 @@ function render(){
   const day = state.days[activeDayIndex] || state.days[0];
   if(day) content.appendChild(renderDay(day));
 
+  el('feedbackTitle').textContent = L.feedbackTitle;
+  el('feedbackText').placeholder = L.feedbackPlaceholder;
+  el('feedbackSubmit').textContent = L.feedbackButton;
+
   renderLageplan();
 }
 
 el('subtitle').textContent = STR.de.loading;
+
+const FEEDBACK_URL = 'https://script.google.com/macros/s/AKfycbzoH4-kugbWwop8jx7tuEztl9vAaZnWhHgHdtD_7NZ1IN3lOxgN0flNEH_kFcHDJiLVnA/exec';
+
+el('feedbackSubmit').addEventListener('click', async () => {
+  const L = t();
+  const text = el('feedbackText').value.trim();
+  if(!text){
+    el('feedbackStatus').textContent = L.feedbackEmpty;
+    return;
+  }
+  if(!confirm(L.feedbackConfirm)) return;
+
+  el('feedbackSubmit').disabled = true;
+  el('feedbackStatus').textContent = L.feedbackSending;
+  try{
+    await fetch(FEEDBACK_URL, {
+      method: 'POST',
+      body: JSON.stringify({ message: text })
+    });
+    el('feedbackText').value = '';
+    el('feedbackStatus').textContent = L.feedbackSent;
+  }catch(e){
+    console.error(e);
+    el('feedbackStatus').textContent = L.feedbackError;
+  }
+  el('feedbackSubmit').disabled = false;
+});
+
 loadAll();
 </script>
 </body>
