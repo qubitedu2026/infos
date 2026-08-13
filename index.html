@@ -114,10 +114,12 @@
   @media (max-width:520px){
     .track-row{grid-template-columns:1fr;}
     .track-columns-header{display:none;}
-    .session.full .session-head{grid-template-columns:60px 1fr 60px;gap:6px;padding:12px 8px;}
-    .session.full .time-badge{width:60px;font-size:11px;}
-    .session.full .tag-title{font-size:14px;padding:5px 8px;}
-    .session.full .chevron{font-size:28px;}
+    .session.full .session-head{
+      display:flex;flex-direction:column;align-items:center;text-align:center;
+      gap:8px;padding:14px 12px;position:relative;
+    }
+    .session.full .time-badge{width:auto;}
+    .session.full .chevron{position:absolute;top:12px;right:10px;font-size:26px;}
   }
 
   .session{
