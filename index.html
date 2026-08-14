@@ -384,7 +384,7 @@ function buildWorkshops(rows){
     .map((r, i) => ({
       id: 'workshop-' + i,
       slot: (r.Slot || '').toString().trim() ? parseInt(r.Slot, 10) : null,
-      track: (r.Track || '').trim() || 'A',
+      track: (r.Track || '').trim() || 'both',
       title_de: (r.Titel_DE || '').trim(),
       title_en: (r.Titel_EN || '').trim(),
       institution: (r.Institution || '').trim()
@@ -473,9 +473,9 @@ function trackLabel(track){
   return '';
 }
 
-function buildWorkshopList(slot){
+function buildWorkshopList(slotKey){
   const L = t();
-  const items = (state.workshops || []).filter(w => w.slot === slot);
+  const items = (state.workshops || []).filter(w => String(w.slot) === String(slotKey));
   const group = (label, arr) => {
     if(arr.length === 0) return '';
     const rows = arr.map(w => `
@@ -484,9 +484,14 @@ function buildWorkshopList(slot){
         <p class="workshop-institution">${escapeHtml(w.institution)}</p>
       </div>
     `).join('');
-    return `<div class="workshop-group"><p class="workshop-group-label">${label}</p>${rows}</div>`;
+    return label
+      ? `<div class="workshop-group"><p class="workshop-group-label">${label}</p>${rows}</div>`
+      : `<div class="workshop-group">${rows}</div>`;
   };
-  const html = group(L.trackA, items.filter(w => w.track === 'A')) + group(L.trackB, items.filter(w => w.track === 'B'));
+  const untracked = items.filter(w => w.track !== 'A' && w.track !== 'B');
+  const html = group(L.trackA, items.filter(w => w.track === 'A'))
+    + group(L.trackB, items.filter(w => w.track === 'B'))
+    + group('', untracked);
   return `<div class="workshop-list">${html}</div>`;
 }
 
@@ -535,11 +540,11 @@ function buildSessionCard(sess){
   const isPoster = sess.type === 'poster';
   const isWorkshop = sess.type === 'experimentieren' && sess.track === 'both';
   const workshopSlotMatch = isWorkshop ? (sess.title_de + ' ' + sess.title_en).match(/Slot\s*(\d+)/i) : null;
-  const workshopSlot = workshopSlotMatch ? parseInt(workshopSlotMatch[1], 10) : null;
+  const workshopSlot = workshopSlotMatch ? workshopSlotMatch[1] : (isWorkshop ? sess.slot : null);
   const hasDetails = isPoster
     ? (state.posters && state.posters.length > 0)
     : isWorkshop
-      ? (state.workshops && state.workshops.some(w => w.slot === workshopSlot))
+      ? (state.workshops && state.workshops.some(w => String(w.slot) === String(workshopSlot)))
       : !!(sess.speaker || sess.room || sess.abstract || sess.abstract_en || sess.hinweis);
   const isFull = sess.track === 'both';
   const hasHinweis = !!sess.hinweis;
