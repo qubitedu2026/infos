@@ -421,7 +421,7 @@ function driveImageUrl(link){
   if(link && link.startsWith('data:')) return link;
   const id = driveFileId(link);
   if(!id) return null;
-  return `https://drive.google.com/uc?export=view&id=${id}`;
+  return `https://drive.google.com/thumbnail?id=${id}&sz=w1600`;
 }
 
 async function loadAll(){
