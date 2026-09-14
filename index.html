@@ -159,6 +159,7 @@
   .body-line{margin:4px 0;color:var(--slate);font-size:13px;}
   .body-line b{color:var(--ink);font-weight:500;}
   .abstract-text{margin-top:8px;line-height:1.6;white-space:pre-wrap;}
+  .session-image{max-width:100%;height:auto;border-radius:8px;margin-top:10px;display:block;}
   .placeholder-text{color:var(--slate);font-style:italic;}
   .hinweis-box{
     background:var(--amber-bg);color:var(--amber-fg);border-radius:6px;padding:8px 10px;
@@ -358,6 +359,7 @@ function buildDay(label_de, label_en, rows){
       abstract: (r.Abstract || '').trim(),
       abstract_en: (r.Abstract_EN || '').trim(),
       hinweis: (r.Hinweis || '').trim(),
+      image: (r.Bild || '').trim(),
       slot: (r.Vortragsnummer || '').toString().trim() || null
     }));
   return { label_de, label_en, sessions };
@@ -546,7 +548,7 @@ function buildSessionCard(sess){
     ? (state.posters && state.posters.length > 0)
     : isWorkshop
       ? (state.workshops && state.workshops.some(w => String(w.slot) === String(workshopSlot)))
-      : !!(sess.speaker || sess.room || sess.abstract || sess.abstract_en || sess.hinweis);
+      : !!(sess.speaker || sess.room || sess.abstract || sess.abstract_en || sess.hinweis || sess.image);
   const isFull = sess.track === 'both';
   const hasHinweis = !!sess.hinweis;
 
@@ -591,6 +593,7 @@ function buildSessionCard(sess){
         ${sess.room ? `<p class="body-line"><b>${sess.type === 'dinner' ? L.locationLabel : L.roomLabel}</b> ${sess.type === 'dinner' ? `<a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(sess.room)}" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline;">${escapeHtml(sess.room)}</a>` : escapeHtml(sess.room)}</p>` : ''}
         ${sess.authors ? `<p class="body-line"><b>${L.authorsLabel}</b> ${escapeHtml(sess.authors)}</p>` : ''}
         ${(() => { const a = pickLang(sess.abstract, sess.abstract_en); return a ? `<div class="abstract-text">${linkifyAbstract(a)}</div>` : ''; })()}
+        ${sess.image ? `<img src="${driveImageUrl(sess.image)}" alt="" class="session-image" onerror="this.style.display='none';">` : ''}
       `}
     </div>` : ''}
   `;
