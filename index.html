@@ -387,7 +387,8 @@ function buildWorkshops(rows){
       track: (r.Track || '').trim() || 'both',
       title_de: (r.Titel_DE || '').trim(),
       title_en: (r.Titel_EN || '').trim(),
-      institution: (r.Institution || '').trim()
+      institution: (r.Institution || '').trim(),
+      room: (r.Raum || '').trim()
     }));
 }
 
@@ -481,7 +482,7 @@ function buildWorkshopList(slotKey){
     const rows = arr.map(w => `
       <div class="workshop-item">
         <p class="workshop-title">${escapeHtml(pickLang(w.title_de, w.title_en))}</p>
-        <p class="workshop-institution">${escapeHtml(w.institution)}</p>
+        <p class="workshop-institution">${[w.institution, w.room].filter(Boolean).map(escapeHtml).join(' · ')}</p>
       </div>
     `).join('');
     return label
