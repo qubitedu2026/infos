@@ -680,7 +680,11 @@ function renderTabs(){
     const tab = document.createElement('button');
     tab.className = 'tab' + (i === activeDayIndex ? ' active' : '');
     tab.textContent = pickLang(day.label_de, day.label_en);
-    tab.addEventListener('click', () => { activeDayIndex = i; render(); });
+    tab.addEventListener('click', () => {
+      activeDayIndex = i;
+      try{ localStorage.setItem('qubit-active-day', String(i)); }catch(e){}
+      render();
+    });
     tabs.appendChild(tab);
   });
   return tabs;
@@ -788,7 +792,13 @@ el('feedbackSubmit').addEventListener('click', async () => {
   el('feedbackSubmit').disabled = false;
 });
 
+try{
+  const savedDay = parseInt(localStorage.getItem('qubit-active-day'), 10);
+  if(!isNaN(savedDay)) activeDayIndex = savedDay;
+}catch(e){}
+
 loadAll();
+setInterval(loadAll, 5 * 60 * 1000);
 </script>
 </body>
 </html>
