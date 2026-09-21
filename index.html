@@ -182,6 +182,7 @@
   .poster-item-body .abstract-text{margin-top:0;font-size:13px;}
 
   .workshop-list{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+  .workshop-list-flat{display:block;}
   .workshop-group-label{
     font-family:'IBM Plex Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:0.05em;
     color:var(--slate);margin:0 0 8px;padding-bottom:6px;border-bottom:1px solid var(--border);
@@ -491,11 +492,12 @@ function buildWorkshopList(slotKey){
       ? `<div class="workshop-group"><p class="workshop-group-label">${label}</p>${rows}</div>`
       : `<div class="workshop-group">${rows}</div>`;
   };
+  const aItems = items.filter(w => w.track === 'A');
+  const bItems = items.filter(w => w.track === 'B');
   const untracked = items.filter(w => w.track !== 'A' && w.track !== 'B');
-  const html = group(L.trackA, items.filter(w => w.track === 'A'))
-    + group(L.trackB, items.filter(w => w.track === 'B'))
-    + group('', untracked);
-  return `<div class="workshop-list">${html}</div>`;
+  const hasSplit = aItems.length > 0 || bItems.length > 0;
+  const html = group(L.trackA, aItems) + group(L.trackB, bItems) + group('', untracked);
+  return `<div class="workshop-list${hasSplit ? '' : ' workshop-list-flat'}">${html}</div>`;
 }
 
 function buildPosterList(){
