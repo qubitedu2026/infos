@@ -729,7 +729,6 @@ function render(){
   const L = t();
   const titleKey = lang === 'de' ? 'Titel (DE)' : 'Titel (EN)';
   const subKey = lang === 'de' ? 'Untertitel (DE)' : 'Untertitel (EN)';
-  const annKey = lang === 'de' ? 'Ankündigung (DE)' : 'Ankündigung (EN)';
 
   el('venueLine').innerHTML = `
     <span class="venue-top"><svg width="12" height="12" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" d="M12 2C7.58 2 4 5.58 4 10c0 5.25 7 12 8 12s8-6.75 8-12c0-4.42-3.58-8-8-8zm0 11a3 3 0 110-6 3 3 0 010 6z"/></svg> ${L.venueName}</span>
@@ -739,10 +738,11 @@ function render(){
   el('subtitle').textContent = pickLang(state.allg['Untertitel (DE)'], state.allg['Untertitel (EN)']);
   el('footerNote').textContent = L.footerHint;
 
-  const ann = state.allg[annKey];
+  const ann = pickLang(state.allg['Ankündigung (DE)'], state.allg['Ankündigung (EN)']);
+  const annTitle = pickLang(state.allg['Titel Ankündigung (DE)'], state.allg['Titel Ankündigung (EN)']) || L.ankuendigung;
   const annArea = el('announcementArea');
   annArea.innerHTML = ann
-    ? `<div class="announcement"><b>${L.ankuendigung}</b>${escapeHtml(ann)}</div>`
+    ? `<div class="announcement"><b>${escapeHtml(annTitle)}</b>${escapeHtml(ann)}</div>`
     : '';
 
   el('langSwitch').querySelectorAll('button').forEach(b => {
