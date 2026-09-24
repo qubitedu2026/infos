@@ -285,7 +285,7 @@ const STR = {
     trackA:'Track A (DE)', trackB:'Track B (EN)', noAbstract:'Kein Abstract hinterlegt.',
     speakerLabel:'Vortragende:', roomLabel:'Raum:', locationLabel:'Ort:', titleLabel:'Titel:', authorsLabel:'Autor:innen:', institutionLabel:'Institution:', hinweisLabel:'Aktueller Hinweis',
     feedbackTitle:'Feedback', feedbackPlaceholder:'Feedback an die Organisation …', feedbackJump:'Feedback',
-    feedbackPrivacy:'Gespeichert werden nur Text und Zeitpunkt. Bitte keine Namen oder Kontaktdaten angeben.', privacyLabel:'Datenschutz', imprintLabel:'Impressum',
+    feedbackPrivacy:'Hinweise zum Datenschutz', privacyLabel:'Datenschutz', imprintLabel:'Impressum',
     feedbackButton:'Senden', feedbackConfirm:'Wirklich absenden?', feedbackSending:'Wird gesendet …',
     feedbackSent:'Danke, angekommen!', feedbackError:'Senden fehlgeschlagen, bitte nochmal versuchen.', feedbackEmpty:'Bitte erst etwas eintragen.',
     footerHint:'Auf einen Programmpunkt tippen, um Details und Abstract aufzuklappen.',
@@ -297,7 +297,7 @@ const STR = {
     trackA:'Track A (DE)', trackB:'Track B (EN)', noAbstract:'No abstract yet.',
     speakerLabel:'Speaker:', roomLabel:'Room:', locationLabel:'Location:', titleLabel:'Title:', authorsLabel:'Authors:', institutionLabel:'Institution:', hinweisLabel:'Current note',
     feedbackTitle:'Feedback', feedbackPlaceholder:'Feedback for the organisers …', feedbackJump:'Feedback',
-    feedbackPrivacy:'Only the text and the time are stored. Please do not include names or contact details.', privacyLabel:'Privacy policy', imprintLabel:'Legal notice',
+    feedbackPrivacy:'Privacy information', privacyLabel:'Privacy policy', imprintLabel:'Legal notice',
     feedbackButton:'Send', feedbackConfirm:'Really send this?', feedbackSending:'Sending …',
     feedbackSent:'Thanks, received!', feedbackError:'Sending failed, please try again.', feedbackEmpty:'Please enter something first.',
     footerHint:'Tap a session to expand details and the abstract.',
@@ -763,7 +763,7 @@ function render(){
   el('feedbackTitle').textContent = L.feedbackTitle;
   el('feedbackJump').textContent = L.feedbackJump;
   el('feedbackText').placeholder = L.feedbackPlaceholder;
-  el('feedbackPrivacy').innerHTML = `${escapeHtml(L.feedbackPrivacy)} <a href="datenschutz.html?lang=${lang}">${escapeHtml(L.privacyLabel)}</a>`;
+  el('feedbackPrivacy').innerHTML = `<a href="datenschutz.html?lang=${lang}">${escapeHtml(L.feedbackPrivacy)}</a>`;
   el('legalLinks').innerHTML = `<a href="https://www.institut-1a.physik.rwth-aachen.de/cms/institut-1a/footer/service/~hujz/impressum/" target="_blank" rel="noopener">${escapeHtml(L.imprintLabel)}</a> · <a href="datenschutz.html?lang=${lang}">${escapeHtml(L.privacyLabel)}</a>`;
   el('feedbackSubmit').textContent = L.feedbackButton;
 
