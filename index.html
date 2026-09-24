@@ -4,10 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>quBit · Zeitplan</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:wght@400;600&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<link rel="stylesheet" href="fonts.css">
+<script src="vendor/papaparse.min.js"></script>
 <style>
   :root{
     --ink:#1B2430;
@@ -213,6 +211,9 @@
   }
   .feedback-textarea:focus{outline:1px solid var(--brand);}
   .feedback-row{display:flex;align-items:center;gap:12px;margin-top:8px;}
+  .feedback-privacy{font-size:12px;color:var(--slate);margin:8px 0 0;}
+  .feedback-privacy a, .legal-links a{color:var(--slate);text-decoration:underline;}
+  .legal-links{font-size:12px;color:var(--slate);margin:8px 0 0;}
   .feedback-status{font-size:12px;color:var(--slate);}
   .empty{padding:2rem 0;color:var(--slate);font-size:14px;}
   .state-msg{padding:3rem 0;text-align:center;color:var(--slate);font-size:14px;}
@@ -256,9 +257,11 @@
       <button class="small primary" id="feedbackSubmit"></button>
       <span class="feedback-status" id="feedbackStatus"></span>
     </div>
+    <p class="feedback-privacy" id="feedbackPrivacy"></p>
   </div>
 
   <div class="footer-note" id="footerNote"></div>
+  <p class="legal-links" id="legalLinks"></p>
 </div>
 
 <script>
@@ -282,6 +285,7 @@ const STR = {
     trackA:'Track A (DE)', trackB:'Track B (EN)', noAbstract:'Kein Abstract hinterlegt.',
     speakerLabel:'Vortragende:', roomLabel:'Raum:', locationLabel:'Ort:', titleLabel:'Titel:', authorsLabel:'Autor:innen:', institutionLabel:'Institution:', hinweisLabel:'Aktueller Hinweis',
     feedbackTitle:'Feedback', feedbackPlaceholder:'Feedback an die Organisation …', feedbackJump:'Feedback',
+    feedbackPrivacy:'Gespeichert werden nur Text und Zeitpunkt. Bitte keine Namen oder Kontaktdaten angeben.', privacyLabel:'Datenschutz', imprintLabel:'Impressum',
     feedbackButton:'Senden', feedbackConfirm:'Wirklich absenden?', feedbackSending:'Wird gesendet …',
     feedbackSent:'Danke, angekommen!', feedbackError:'Senden fehlgeschlagen, bitte nochmal versuchen.', feedbackEmpty:'Bitte erst etwas eintragen.',
     footerHint:'Auf einen Programmpunkt tippen, um Details und Abstract aufzuklappen.',
@@ -293,6 +297,7 @@ const STR = {
     trackA:'Track A (DE)', trackB:'Track B (EN)', noAbstract:'No abstract yet.',
     speakerLabel:'Speaker:', roomLabel:'Room:', locationLabel:'Location:', titleLabel:'Title:', authorsLabel:'Authors:', institutionLabel:'Institution:', hinweisLabel:'Current note',
     feedbackTitle:'Feedback', feedbackPlaceholder:'Feedback for the organisers …', feedbackJump:'Feedback',
+    feedbackPrivacy:'Only the text and the time are stored. Please do not include names or contact details.', privacyLabel:'Privacy policy', imprintLabel:'Legal notice',
     feedbackButton:'Send', feedbackConfirm:'Really send this?', feedbackSending:'Sending …',
     feedbackSent:'Thanks, received!', feedbackError:'Sending failed, please try again.', feedbackEmpty:'Please enter something first.',
     footerHint:'Tap a session to expand details and the abstract.',
@@ -758,6 +763,8 @@ function render(){
   el('feedbackTitle').textContent = L.feedbackTitle;
   el('feedbackJump').textContent = L.feedbackJump;
   el('feedbackText').placeholder = L.feedbackPlaceholder;
+  el('feedbackPrivacy').innerHTML = `${escapeHtml(L.feedbackPrivacy)} <a href="datenschutz.html?lang=${lang}">${escapeHtml(L.privacyLabel)}</a>`;
+  el('legalLinks').innerHTML = `<a href="https://www.institut-1a.physik.rwth-aachen.de/cms/institut-1a/footer/service/~hujz/impressum/" target="_blank" rel="noopener">${escapeHtml(L.imprintLabel)}</a> · <a href="datenschutz.html?lang=${lang}">${escapeHtml(L.privacyLabel)}</a>`;
   el('feedbackSubmit').textContent = L.feedbackButton;
 
   renderLageplan();

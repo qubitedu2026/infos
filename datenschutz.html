@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>quBit · Datenschutz</title>
+<link rel="stylesheet" href="fonts.css">
+<style>
+  :root{
+    --ink:#1B2430;
+    --paper:#FAFAF8;
+    --card:#FFFFFF;
+    --slate:#6B7280;
+    --border:#E3E1D9;
+    --brand:#00549F;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:'Space Grotesk',system-ui,sans-serif;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:760px;margin:0 auto;padding:2.5rem 1.25rem 4rem;}
+  .top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:1.5rem;}
+  .back{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--slate);text-decoration:underline;}
+  .lang-switch{display:flex;border:1px solid var(--ink);border-radius:6px;overflow:hidden;}
+  .lang-switch button{font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:500;border:none;border-radius:0;background:var(--paper);color:var(--ink);padding:7px 14px;cursor:pointer;}
+  .lang-switch button.active{background:var(--ink);color:var(--paper);}
+  h1{font-size:26px;font-weight:600;margin:0 0 4px;line-height:1.2;}
+  .stand{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--slate);margin:0 0 2rem;}
+  h2{font-family:'Source Serif 4',serif;font-size:18px;font-weight:600;margin:2rem 0 .5rem;}
+  p, li{font-size:14px;line-height:1.65;}
+  p{margin:0 0 .75rem;}
+  ul{margin:0 0 .75rem;padding-left:1.2rem;}
+  a{color:var(--brand);}
+  .addr{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:10px 14px;margin:0 0 .75rem;font-size:14px;line-height:1.6;}
+  [data-lang]{display:none;}
+  body.de [data-lang="de"], body.en [data-lang="en"]{display:block;}
+</style>
+</head>
+<body class="de">
+<div class="wrap">
+  <div class="top">
+    <a class="back" id="backLink" href="./"></a>
+    <div class="lang-switch" id="langSwitch">
+      <button data-set="de">DE</button>
+      <button data-set="en">EN</button>
+    </div>
+  </div>
+
+  <!-- ===================== DEUTSCH ===================== -->
+  <div data-lang="de">
+    <h1>Datenschutzerklärung</h1>
+    <p class="stand">Stand: September 2026</p>
+
+    <p>Diese Website informiert über das Programm der Tagung QuBIT EDU. Sie verwendet keine Cookies, kein Tracking und keine Analyse- oder Werbedienste. Eine Registrierung ist nicht nötig. Im Folgenden erfahren Sie, welche Daten beim Besuch dennoch verarbeitet werden.</p>
+
+    <h2>1. Verantwortlicher</h2>
+    <div class="addr">Rektor der RWTH Aachen University<br>Templergraben 55, 52062 Aachen<br>Telefon: +49 241 80 1<br>E-Mail: <a href="mailto:rektorat@rwth-aachen.de">rektorat@rwth-aachen.de</a></div>
+    <p>Ansprechperson für diese Website: Norman Thimm, I. Physikalisches Institut (IA), RWTH Aachen University.</p>
+
+    <h2>2. Datenschutzbeauftragter</h2>
+    <div class="addr">Datenschutzbeauftragter der RWTH Aachen University<br>Templergraben 55, 52062 Aachen<br>Telefon: +49 241 80 93665<br>E-Mail: <a href="mailto:dsb@rwth-aachen.de">dsb@rwth-aachen.de</a></div>
+
+    <h2>3. Hosting über GitHub Pages</h2>
+    <p>Die Website wird bei GitHub Pages bereitgestellt (GitHub Inc., 88 Colin P. Kelly Jr. Street, San Francisco, CA 94107, USA). Beim Aufruf verarbeitet GitHub technisch notwendige Zugriffsdaten, insbesondere Ihre IP-Adresse, Datum und Uhrzeit, die aufgerufene Seite sowie Angaben zu Browser und Betriebssystem. Das ist erforderlich, um die Seite auszuliefern und den Betrieb abzusichern. Dabei können Daten in die USA übermittelt werden. GitHub beteiligt sich am EU-US Data Privacy Framework.</p>
+    <p>Rechtsgrundlage ist Art. 6 Abs. 1 lit. e DSGVO in Verbindung mit § 3 DSG NRW. Weitere Informationen: <a href="https://docs.github.com/de/site-policy/privacy-policies/github-general-privacy-statement" target="_blank" rel="noopener">Datenschutzerklärung von GitHub</a>.</p>
+
+    <h2>4. Programmdaten, Lageplan und Bilder (Google)</h2>
+    <p>Die Inhalte des Zeitplans werden beim Aufruf direkt aus einer Google-Tabelle geladen, der Lageplan und weitere Bilder aus Google Drive. Anbieter ist Google Ireland Limited, Gordon House, Barrow Street, Dublin 4, Irland. Dabei wird Ihre IP-Adresse an Google übermittelt. Eine Übermittlung in die USA ist nicht ausgeschlossen. Google beteiligt sich am EU-US Data Privacy Framework. Solange die Seite geöffnet ist, werden die Programmdaten etwa alle fünf Minuten neu geladen, damit Änderungen sichtbar werden.</p>
+    <p>Rechtsgrundlage ist Art. 6 Abs. 1 lit. e DSGVO in Verbindung mit § 3 DSG NRW. Weitere Informationen: <a href="https://policies.google.com/privacy?hl=de" target="_blank" rel="noopener">Datenschutzerklärung von Google</a>.</p>
+
+    <h2>5. Feedback-Funktion</h2>
+    <p>Über das Feedback-Feld können Sie uns freiwillig Rückmeldungen senden. Gespeichert werden nur der eingegebene Text und der Zeitpunkt des Absendens, und zwar in einer Google-Tabelle des Organisationsteams (übertragen über Google Apps Script, Anbieter wie unter Punkt 4). Namen oder Kontaktdaten werden nicht abgefragt. Bitte tragen Sie keine personenbezogenen Daten in das Textfeld ein.</p>
+    <p>Die Rückmeldungen dienen ausschließlich der Verbesserung der Tagung und werden spätestens sechs Monate nach Ende der Tagung gelöscht. Rechtsgrundlage ist Ihre Einwilligung durch das Absenden (Art. 6 Abs. 1 lit. a DSGVO). Da keine Namen gespeichert werden, lässt sich ein Beitrag nachträglich in der Regel nicht mehr einer Person zuordnen.</p>
+
+    <h2>6. Speicherung im Browser</h2>
+    <p>Die Seite merkt sich im lokalen Speicher Ihres Browsers (localStorage), welchen Programmtag Sie zuletzt angesehen haben, damit dieser beim nächsten Aufruf wieder angezeigt wird. Diese Information verlässt Ihr Gerät nicht und kann jederzeit über die Browsereinstellungen gelöscht werden. Rechtsgrundlage ist § 25 Abs. 2 Nr. 2 TDDDG.</p>
+
+    <h2>7. Schriftarten</h2>
+    <p>Alle Schriftarten und Skripte werden direkt von dieser Website geladen. Es besteht keine Verbindung zu Google Fonts oder anderen externen Schrift- oder Skriptanbietern.</p>
+
+    <h2>8. Links zu anderen Websites</h2>
+    <p>Die Seite enthält Links, etwa zu Google Maps, zum Impressum des I. Physikalischen Instituts oder zu Websites in den Abstracts. Daten werden an diese Anbieter erst übertragen, wenn Sie einen Link anklicken. Ab dann gilt die Datenschutzerklärung des jeweiligen Anbieters.</p>
+
+    <h2>9. Ihre Rechte</h2>
+    <p>Sie haben das Recht auf Auskunft (Art. 15 DSGVO), Berichtigung (Art. 16), Löschung (Art. 17), Einschränkung der Verarbeitung (Art. 18) und Widerspruch (Art. 21). Eine erteilte Einwilligung können Sie jederzeit mit Wirkung für die Zukunft widerrufen (Art. 7 Abs. 3). Wenden Sie sich dazu an die oben genannten Stellen.</p>
+    <p>Außerdem können Sie sich bei der zuständigen Aufsichtsbehörde beschweren: Landesbeauftragte für Datenschutz und Informationsfreiheit Nordrhein-Westfalen, Kavalleriestraße 2–4, 40213 Düsseldorf, <a href="https://www.ldi.nrw.de" target="_blank" rel="noopener">www.ldi.nrw.de</a>.</p>
+    <p>Allgemeine Informationen zum Datenschutz an der RWTH: <a href="https://www.rwth-aachen.de/datenschutz" target="_blank" rel="noopener">www.rwth-aachen.de/datenschutz</a>.</p>
+  </div>
+
+  <!-- ===================== ENGLISH ===================== -->
+  <div data-lang="en">
+    <h1>Privacy policy</h1>
+    <p class="stand">Last updated: September 2026</p>
+
+    <p>This website provides the programme of the QuBIT EDU conference. It uses no cookies, no tracking and no analytics or advertising services, and no registration is required. The following explains which data are nevertheless processed when you visit it. The German version is legally binding.</p>
+
+    <h2>1. Controller</h2>
+    <div class="addr">Rector of RWTH Aachen University<br>Templergraben 55, 52062 Aachen, Germany<br>Phone: +49 241 80 1<br>Email: <a href="mailto:rektorat@rwth-aachen.de">rektorat@rwth-aachen.de</a></div>
+    <p>Contact person for this website: Norman Thimm, I. Institute of Physics (IA), RWTH Aachen University.</p>
+
+    <h2>2. Data protection officer</h2>
+    <div class="addr">Data Protection Officer of RWTH Aachen University<br>Templergraben 55, 52062 Aachen, Germany<br>Phone: +49 241 80 93665<br>Email: <a href="mailto:dsb@rwth-aachen.de">dsb@rwth-aachen.de</a></div>
+
+    <h2>3. Hosting via GitHub Pages</h2>
+    <p>The website is served by GitHub Pages (GitHub Inc., 88 Colin P. Kelly Jr. Street, San Francisco, CA 94107, USA). When you visit it, GitHub processes technically necessary access data, in particular your IP address, date and time, the page requested and information about your browser and operating system. This is required to deliver the site and keep it secure. Data may be transferred to the USA. GitHub participates in the EU-US Data Privacy Framework.</p>
+    <p>Legal basis: Art. 6(1)(e) GDPR in conjunction with § 3 DSG NRW. More information: <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement" target="_blank" rel="noopener">GitHub privacy statement</a>.</p>
+
+    <h2>4. Programme data, site map and images (Google)</h2>
+    <p>The schedule content is loaded directly from a Google spreadsheet when you open the page, and the site map and other images are loaded from Google Drive. The provider is Google Ireland Limited, Gordon House, Barrow Street, Dublin 4, Ireland. Your IP address is transmitted to Google in the process, and a transfer to the USA cannot be ruled out. Google participates in the EU-US Data Privacy Framework. While the page is open, the programme data are reloaded about every five minutes so that changes become visible.</p>
+    <p>Legal basis: Art. 6(1)(e) GDPR in conjunction with § 3 DSG NRW. More information: <a href="https://policies.google.com/privacy?hl=en" target="_blank" rel="noopener">Google privacy policy</a>.</p>
+
+    <h2>5. Feedback function</h2>
+    <p>You can voluntarily send us feedback via the feedback field. Only the text you enter and the time of submission are stored, in a Google spreadsheet of the organising team (transmitted via Google Apps Script, provider as in section 4). Names and contact details are not requested. Please do not enter any personal data in the text field.</p>
+    <p>Feedback is used solely to improve the conference and is deleted no later than six months after the conference ends. Legal basis: your consent by submitting (Art. 6(1)(a) GDPR). Since no names are stored, a submission can usually not be linked to a person afterwards.</p>
+
+    <h2>6. Storage in your browser</h2>
+    <p>The page stores in your browser's local storage (localStorage) which programme day you viewed last, so that it is shown again on your next visit. This information never leaves your device and can be deleted at any time via your browser settings. Legal basis: § 25(2) no. 2 TDDDG.</p>
+
+    <h2>7. Fonts</h2>
+    <p>All fonts and scripts are loaded directly from this website. There is no connection to Google Fonts or any other external font or script provider.</p>
+
+    <h2>8. Links to other websites</h2>
+    <p>The page contains links, for example to Google Maps, to the legal notice of the I. Institute of Physics or to websites mentioned in abstracts. Data are only transmitted to these providers once you click a link. From then on, the provider's own privacy policy applies.</p>
+
+    <h2>9. Your rights</h2>
+    <p>You have the right of access (Art. 15 GDPR), rectification (Art. 16), erasure (Art. 17), restriction of processing (Art. 18) and to object (Art. 21). You can withdraw consent at any time with effect for the future (Art. 7(3)). Please contact the offices named above.</p>
+    <p>You also have the right to lodge a complaint with the competent supervisory authority: Landesbeauftragte für Datenschutz und Informationsfreiheit Nordrhein-Westfalen, Kavalleriestraße 2–4, 40213 Düsseldorf, Germany, <a href="https://www.ldi.nrw.de" target="_blank" rel="noopener">www.ldi.nrw.de</a>.</p>
+    <p>General information on data protection at RWTH: <a href="https://www.rwth-aachen.de/datenschutz" target="_blank" rel="noopener">www.rwth-aachen.de/datenschutz</a>.</p>
+  </div>
+</div>
+
+<script>
+  const BACK = { de: '← Zurück zum Zeitplan', en: '← Back to the schedule' };
+  function setLang(l){
+    if(l !== 'en') l = 'de';
+    document.body.className = l;
+    document.documentElement.lang = l;
+    document.title = l === 'en' ? 'quBit · Privacy policy' : 'quBit · Datenschutz';
+    document.getElementById('backLink').textContent = BACK[l];
+    document.querySelectorAll('#langSwitch button').forEach(b => b.classList.toggle('active', b.dataset.set === l));
+  }
+  document.getElementById('langSwitch').addEventListener('click', e => {
+    const b = e.target.closest('button[data-set]');
+    if(b) setLang(b.dataset.set);
+  });
+  setLang(new URLSearchParams(location.search).get('lang'));
+</script>
+</body>
+</html>
