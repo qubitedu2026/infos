@@ -747,7 +747,7 @@ function render(){
   const annTitle = pickLang(state.allg['Titel Ankündigung (DE)'], state.allg['Titel Ankündigung (EN)']) || L.ankuendigung;
   const annArea = el('announcementArea');
   annArea.innerHTML = ann
-    ? `<div class="announcement"><b>${escapeHtml(annTitle)}</b>${escapeHtml(ann)}</div>`
+    ? `<div class="announcement"><b>${escapeHtml(annTitle)}</b>${linkifyAbstract(ann)}</div>`
     : '';
 
   el('langSwitch').querySelectorAll('button').forEach(b => {
