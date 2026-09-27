@@ -671,11 +671,20 @@ function escapeHtml(str){
 
 function linkifyAbstract(str){
   const escaped = escapeHtml(str);
-  return escaped.replace(/(https?:\/\/[^\s<]+)/g, url => {
+  const linkAttrs = 'target="_blank" rel="noopener" style="color:inherit;text-decoration:underline;"';
+  const saved = [];
+  // [Linktext](https://...) -> verlinktes Wort
+  let out = escaped.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)"<]+)\)/g, (m, text, url) => {
+    saved.push(`<a href="${url}" ${linkAttrs}>${text}</a>`);
+    return `\u0000${saved.length - 1}\u0000`;
+  });
+  // nackte URLs -> Link
+  out = out.replace(/(https?:\/\/[^\s<"\u0000]+)/g, url => {
     const clean = url.replace(/[)\].,;:!?]+$/, '');
     const trail = url.slice(clean.length);
-    return `<a href="${clean}" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline;">${clean}</a>${trail}`;
+    return `<a href="${clean}" ${linkAttrs}>${clean}</a>${trail}`;
   });
+  return out.replace(/\u0000(\d+)\u0000/g, (m, i) => saved[i]);
 }
 
 function renderTabs(){
