@@ -424,10 +424,12 @@ function driveEmbedUrl(link){
 }
 
 function driveImageUrl(link){
-  if(link && link.startsWith('data:')) return link;
+  if(!link) return null;
+  if(link.startsWith('data:')) return link;
   const id = driveFileId(link);
-  if(!id) return null;
-  return `https://drive.google.com/thumbnail?id=${id}&sz=w1600`;
+  if(id) return `https://drive.google.com/thumbnail?id=${id}&sz=w1600`;
+  // kein Drive-Link: Datei im Repo (z.B. img/datei.jpg) oder normale Bild-URL direkt verwenden
+  return link;
 }
 
 async function loadAll(){
